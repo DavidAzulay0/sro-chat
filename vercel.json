@@ -1,6 +1,10 @@
 {
-  "rewrites": [
-    { "source": "/api/chat", "destination": "/api/chat.py" },
-    { "source": "/((?!api/).*)", "destination": "/index.html" }
+  "builds": [
+    { "src": "index.html", "use": "@vercel/static" },
+    { "src": "api/chat.py", "use": "@vercel/python" }
+  ],
+  "routes": [
+    { "src": "/api/chat", "dest": "/api/chat.py" },
+    { "src": "/(.*)", "dest": "/index.html" }
   ]
 }
