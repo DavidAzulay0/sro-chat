@@ -1,18 +1,6 @@
 {
-  "functions": {
-    "api/chat.py": {
-      "maxDuration": 30,
-      "memory": 512
-    }
-  },
-  "routes": [
-    {
-      "src": "/api/chat",
-      "dest": "/api/chat.py"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
-    }
+  "rewrites": [
+    { "source": "/api/chat", "destination": "/api/chat.py" },
+    { "source": "/((?!api/).*)", "destination": "/index.html" }
   ]
 }
