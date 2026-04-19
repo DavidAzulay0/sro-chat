@@ -3,94 +3,387 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>SRO SUSEP — Assistente de Registro | Chubb</title>
+  <title>Assistente SRO SUSEP | Chubb</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg: #f7f7f7;
-      --surface: #ffffff;
-      --border: #e0e0e0;
-      --primary: #5A2D82;       /* Chubb purple */
-      --primary-dark: #3d1f5c;
-      --primary-light: #f3edf9;
-      --text: #1a1a1a;
-      --text-muted: #666666;
-      --user-bg: #5A2D82;
-      --user-text: #ffffff;
-      --bot-bg: #ffffff;
-      --shadow: 0 1px 4px rgba(0,0,0,0.08);
-      --radius: 4px;            /* Chubb uses sharp corners */
+      --purple:        #6E27C5;
+      --purple-dark:   #4d1a8f;
+      --purple-light:  #f3ecfc;
+      --purple-mid:    #ded0f5;
+      --white:         #ffffff;
+      --off-white:     #f8f8f8;
+      --gray-100:      #f2f2f2;
+      --gray-200:      #e4e4e4;
+      --gray-400:      #afafaf;
+      --gray-600:      #6c6c6c;
+      --gray-800:      #333333;
+      --black:         #111111;
+      --font:          'Lato', 'Helvetica Neue', Arial, sans-serif;
+      --radius:        2px;
+      --shadow-sm:     0 1px 3px rgba(0,0,0,0.07);
+      --shadow-md:     0 4px 16px rgba(0,0,0,0.10);
     }
 
-    body {
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-      background: var(--bg);
-      color: var(--text);
-      height: 100dvh;
+    html, body {
+      height: 100%;
+      font-family: var(--font);
+      background: var(--white);
+      color: var(--black);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    /* ═══════════════════════════════════
+       HEADER
+    ═══════════════════════════════════ */
+    .site-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--gray-200);
+      height: 64px;
       display: flex;
+      align-items: center;
+      padding: 0 32px;
+      gap: 20px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .header-logo img {
+      height: 28px;
+      display: block;
+    }
+
+    .header-sep {
+      width: 1px;
+      height: 28px;
+      background: var(--gray-200);
+    }
+
+    .header-product {
+      font-size: 13px;
+      font-weight: 400;
+      color: var(--gray-600);
+      letter-spacing: 0.2px;
+    }
+
+    .header-tag {
+      margin-left: auto;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .header-tag span {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--purple);
+      background: var(--purple-light);
+      padding: 3px 10px;
+      border-radius: 2px;
+    }
+
+    /* ═══════════════════════════════════
+       STATS BAR
+    ═══════════════════════════════════ */
+    .stats-bar {
+      background: var(--purple);
+      color: rgba(255,255,255,0.92);
+      font-size: 12px;
+      font-weight: 400;
+      letter-spacing: 0.3px;
+      text-align: center;
+      padding: 7px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0;
+      flex-wrap: wrap;
+    }
+
+    .stats-bar .stat {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0 20px;
+    }
+
+    .stats-bar .stat:not(:last-child) {
+      border-right: 1px solid rgba(255,255,255,0.25);
+    }
+
+    .stats-bar .stat-num {
+      font-weight: 900;
+      font-size: 14px;
+      color: #fff;
+    }
+
+    /* ═══════════════════════════════════
+       MAIN LAYOUT
+    ═══════════════════════════════════ */
+    #app {
+      display: flex;
+      flex-direction: column;
+      height: calc(100vh - 64px - 34px); /* minus header & stats bar */
+    }
+
+    /* ─── WELCOME STATE (split) ─── */
+    #welcome-screen {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 380px;
+      gap: 0;
+      overflow: hidden;
+    }
+
+    /* Left panel */
+    .welcome-left {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 48px 40px;
+      border-right: 1px solid var(--gray-200);
+    }
+
+    .welcome-eyebrow {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--purple);
+      margin-bottom: 12px;
+    }
+
+    .welcome-title {
+      font-size: 28px;
+      font-weight: 900;
+      color: var(--black);
+      text-align: center;
+      line-height: 1.25;
+      margin-bottom: 8px;
+    }
+
+    .welcome-sub {
+      font-size: 14px;
+      color: var(--gray-600);
+      text-align: center;
+      max-width: 420px;
+      margin-bottom: 32px;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    /* Big search-bar input */
+    .search-bar {
+      width: 100%;
+      max-width: 560px;
+      background: var(--white);
+      border: 2px solid var(--purple);
+      border-radius: var(--radius);
+      display: flex;
+      align-items: flex-end;
+      gap: 10px;
+      padding: 12px 12px 12px 18px;
+      box-shadow: 0 4px 24px rgba(110,39,197,0.12);
+      transition: box-shadow 0.2s;
+    }
+
+    .search-bar:focus-within {
+      box-shadow: 0 4px 32px rgba(110,39,197,0.22);
+    }
+
+    .search-bar textarea {
+      flex: 1;
+      border: none;
+      background: transparent;
+      font-family: var(--font);
+      font-size: 15px;
+      color: var(--black);
+      outline: none;
+      resize: none;
+      max-height: 100px;
+      min-height: 26px;
+      line-height: 1.55;
+    }
+
+    .search-bar textarea::placeholder {
+      color: var(--gray-400);
+      font-weight: 300;
+    }
+
+    .search-bar button {
+      flex-shrink: 0;
+      width: 40px;
+      height: 40px;
+      background: var(--purple);
+      border: none;
+      border-radius: var(--radius);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .search-bar button:hover { background: var(--purple-dark); }
+    .search-bar button:active { transform: scale(0.95); }
+    .search-bar button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .search-bar button svg { fill: white; }
+
+    /* Suggestions */
+    .suggestions-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      margin: 20px 0 8px;
+      align-self: flex-start;
+      max-width: 560px;
+      width: 100%;
+    }
+
+    .suggestions {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      width: 100%;
+      max-width: 560px;
+    }
+
+    .sugg-btn {
+      background: none;
+      border: none;
+      border-left: 2px solid var(--gray-200);
+      padding: 5px 12px;
+      font-family: var(--font);
+      font-size: 13px;
+      color: var(--gray-600);
+      cursor: pointer;
+      text-align: left;
+      line-height: 1.5;
+      transition: border-color 0.15s, color 0.15s;
+      border-radius: 0;
+    }
+
+    .sugg-btn:hover {
+      border-color: var(--purple);
+      color: var(--purple-dark);
+    }
+
+    /* Right panel — example */
+    .example-panel {
+      background: var(--off-white);
+      border-left: 1px solid var(--gray-200);
+      overflow-y: auto;
+      padding: 28px 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .example-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      padding-bottom: 10px;
+      border-bottom: 1px solid var(--gray-200);
+    }
+
+    .example-msg {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .ex-bubble {
+      border-radius: var(--radius);
+      padding: 10px 14px;
+      font-size: 13px;
+      line-height: 1.65;
+    }
+
+    .ex-bubble.user {
+      background: var(--purple);
+      color: white;
+      align-self: flex-end;
+      max-width: 90%;
+    }
+
+    .ex-bubble.bot {
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      box-shadow: var(--shadow-sm);
+      max-width: 100%;
+    }
+
+    .ex-bubble.bot strong {
+      color: var(--purple-dark);
+      font-weight: 700;
+    }
+
+    .ex-bubble.bot .field-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+      padding-top: 6px;
+      border-top: 1px solid var(--gray-100);
+    }
+
+    .ex-bubble.bot .field-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--gray-400);
+      min-width: 80px;
+    }
+
+    .ex-bubble.bot .field-val {
+      font-size: 12.5px;
+      color: var(--gray-800);
+    }
+
+    .ex-tag {
+      display: inline-block;
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      background: var(--purple-light);
+      color: var(--purple);
+      padding: 2px 8px;
+      border-radius: 2px;
+      margin-bottom: 8px;
+    }
+
+    /* ─── CHAT STATE ─── */
+    #chat-screen {
+      display: none;
+      flex: 1;
       flex-direction: column;
       overflow: hidden;
     }
 
-    /* ── Header ── */
-    header {
-      background: var(--surface);
-      border-bottom: 3px solid var(--primary);
-      padding: 0 32px;
-      height: 60px;
-      display: flex;
-      align-items: center;
-      gap: 20px;
-      flex-shrink: 0;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.06);
-    }
-
-    /* Chubb wordmark */
-    .chubb-logo {
-      font-size: 20px;
-      font-weight: 700;
-      letter-spacing: 2px;
-      color: var(--primary);
-      text-transform: uppercase;
-      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
-    }
-
-    .header-divider {
-      width: 1px;
-      height: 24px;
-      background: var(--border);
-    }
-
-    .header-title {
-      font-size: 14px;
-      font-weight: 400;
-      color: var(--text-muted);
-      letter-spacing: 0.3px;
-    }
-
-    .header-badge {
-      margin-left: auto;
-      font-size: 11px;
-      font-weight: 600;
-      background: var(--primary-light);
-      color: var(--primary);
-      padding: 3px 10px;
-      border-radius: 2px;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-
-    /* ── Chat area ── */
-    #chat {
+    #chat-messages {
       flex: 1;
       overflow-y: auto;
-      padding: 32px 0;
+      padding: 24px 0;
       scroll-behavior: smooth;
     }
 
-    .chat-inner {
-      max-width: 760px;
+    .msgs-inner {
+      max-width: 720px;
       margin: 0 auto;
       padding: 0 24px;
       display: flex;
@@ -98,492 +391,522 @@
       gap: 4px;
     }
 
-    /* ── Welcome ── */
-    .welcome {
-      text-align: center;
-      padding: 32px 16px 40px;
-    }
-
-    .welcome-line {
-      width: 48px;
-      height: 3px;
-      background: var(--primary);
-      margin: 0 auto 20px;
-    }
-
-    .welcome h1 {
-      font-size: 20px;
-      font-weight: 700;
-      color: var(--text);
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-
-    .welcome p {
-      font-size: 14px;
-      color: var(--text-muted);
-      max-width: 460px;
-      margin: 0 auto 28px;
-      line-height: 1.7;
-      font-weight: 400;
-    }
-
-    .suggestions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      justify-content: center;
-    }
-
-    .suggestion-btn {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--primary);
-      border-radius: var(--radius);
-      padding: 11px 16px;
-      font-size: 13px;
-      color: var(--text);
-      cursor: pointer;
-      transition: all 0.15s;
-      text-align: left;
-      line-height: 1.5;
-      max-width: 340px;
-      font-family: inherit;
-    }
-
-    .suggestion-btn:hover {
-      background: var(--primary-light);
-      border-left-color: var(--primary-dark);
-      color: var(--primary-dark);
-    }
-
-    /* ── Messages ── */
-    .message {
+    /* Chat bubbles */
+    .msg {
       display: flex;
       gap: 12px;
       padding: 4px 0;
-      animation: fadeIn 0.18s ease;
+      animation: fadeUp 0.18s ease;
     }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(5px); }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(6px); }
       to   { opacity: 1; transform: translateY(0); }
     }
 
-    .message.user {
-      flex-direction: row-reverse;
-    }
+    .msg.user { flex-direction: row-reverse; }
 
-    .avatar {
-      width: 34px;
-      height: 34px;
+    .av {
+      width: 32px;
+      height: 32px;
       border-radius: 2px;
       flex-shrink: 0;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 12px;
-      font-weight: 700;
+      font-size: 10px;
+      font-weight: 900;
       letter-spacing: 0.5px;
       margin-top: 2px;
     }
 
-    .message.user .avatar {
-      background: var(--user-bg);
-      color: white;
-    }
+    .msg.user .av { background: var(--purple); color: white; }
+    .msg.bot  .av { background: var(--purple-light); color: var(--purple); border: 1px solid var(--purple-mid); }
 
-    .message.bot .avatar {
-      background: var(--primary-light);
-      color: var(--primary);
-      border: 1px solid #d9c7ec;
-    }
-
-    .bubble {
-      max-width: calc(100% - 54px);
-      padding: 11px 16px;
+    .bbl {
+      max-width: calc(100% - 52px);
+      padding: 10px 16px;
       border-radius: var(--radius);
       font-size: 14px;
       line-height: 1.7;
     }
 
-    .message.user .bubble {
-      background: var(--user-bg);
-      color: var(--user-text);
+    .msg.user .bbl {
+      background: var(--purple);
+      color: white;
       border-bottom-right-radius: 0;
     }
 
-    .message.bot .bubble {
-      background: var(--bot-bg);
-      color: var(--text);
-      border: 1px solid var(--border);
+    .msg.bot .bbl {
+      background: var(--white);
+      color: var(--black);
+      border: 1px solid var(--gray-200);
       border-bottom-left-radius: 0;
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-sm);
     }
 
-    /* Markdown inside bubbles */
-    .bubble strong { font-weight: 700; }
+    .bbl strong { font-weight: 700; }
+    .bbl ul, .bbl ol { padding-left: 18px; margin: 6px 0; }
+    .bbl li { margin: 3px 0; }
+    .bbl p { margin: 4px 0; }
+    .bbl p:first-child { margin-top: 0; }
+    .bbl p:last-child  { margin-bottom: 0; }
 
-    .bubble ul, .bubble ol {
-      padding-left: 20px;
-      margin: 6px 0;
-    }
-
-    .bubble li { margin: 3px 0; }
-
-    .bubble p { margin: 5px 0; }
-    .bubble p:first-child { margin-top: 0; }
-    .bubble p:last-child  { margin-bottom: 0; }
-
-    .bubble h1, .bubble h2, .bubble h3 {
-      font-size: 13px;
-      font-weight: 700;
-      margin: 10px 0 4px;
+    .bbl h1, .bbl h2, .bbl h3 {
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: 0.8px;
       text-transform: uppercase;
-      letter-spacing: 0.4px;
+      color: var(--purple-dark);
+      margin: 10px 0 4px;
     }
 
-    .bubble code {
-      background: #f0eaf7;
-      color: var(--primary-dark);
+    .bbl code {
+      background: var(--purple-light);
+      color: var(--purple-dark);
       padding: 1px 6px;
       border-radius: 2px;
       font-size: 12.5px;
       font-family: 'SF Mono', Consolas, monospace;
     }
 
-    .message.user .bubble code {
-      background: rgba(255,255,255,0.2);
-      color: white;
-    }
+    .msg.user .bbl code { background: rgba(255,255,255,0.2); color: white; }
 
-    .bubble blockquote {
-      border-left: 3px solid var(--primary);
+    .bbl blockquote {
+      border-left: 3px solid var(--purple);
       padding-left: 10px;
-      color: var(--text-muted);
+      color: var(--gray-600);
       margin: 6px 0;
     }
 
-    /* ── Typing indicator ── */
-    .typing-indicator {
-      display: flex;
-      gap: 5px;
-      align-items: center;
-      padding: 4px 2px;
-    }
-
-    .typing-indicator span {
-      width: 7px;
-      height: 7px;
-      background: var(--primary);
+    /* Typing */
+    .typing { display: flex; gap: 5px; align-items: center; padding: 4px 0; }
+    .typing span {
+      width: 7px; height: 7px;
+      background: var(--purple);
       border-radius: 50%;
-      opacity: 0.6;
+      opacity: 0.5;
       animation: bounce 1.2s infinite;
     }
-
-    .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-    .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+    .typing span:nth-child(2) { animation-delay: 0.2s; }
+    .typing span:nth-child(3) { animation-delay: 0.4s; }
 
     @keyframes bounce {
-      0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
-      30%            { transform: translateY(-5px); opacity: 1; }
+      0%,60%,100% { transform: translateY(0); opacity: 0.5; }
+      30%          { transform: translateY(-5px); opacity: 1; }
     }
 
-    /* ── Input area ── */
-    #input-area {
-      background: var(--surface);
-      border-top: 1px solid var(--border);
-      padding: 14px 24px;
-      flex-shrink: 0;
+    /* ═══════════════════════════════════
+       BOTTOM INPUT BAR (chat mode)
+    ═══════════════════════════════════ */
+    #chat-input-bar {
+      display: none;
+      background: var(--white);
+      border-top: 1px solid var(--gray-200);
+      padding: 12px 24px;
     }
 
-    .input-wrapper {
-      max-width: 760px;
+    .chat-input-wrap {
+      max-width: 720px;
       margin: 0 auto;
       display: flex;
       align-items: flex-end;
       gap: 10px;
-      background: var(--bg);
-      border: 1.5px solid var(--border);
+      background: var(--off-white);
+      border: 1.5px solid var(--gray-200);
       border-radius: var(--radius);
       padding: 8px 8px 8px 16px;
       transition: border-color 0.15s;
     }
 
-    .input-wrapper:focus-within {
-      border-color: var(--primary);
-      background: white;
+    .chat-input-wrap:focus-within {
+      border-color: var(--purple);
+      background: var(--white);
     }
 
-    #user-input {
+    .chat-input-wrap textarea {
       flex: 1;
       border: none;
       background: transparent;
+      font-family: var(--font);
       font-size: 14px;
-      color: var(--text);
+      color: var(--black);
       outline: none;
       resize: none;
-      max-height: 120px;
+      max-height: 100px;
       min-height: 24px;
-      line-height: 1.6;
-      font-family: inherit;
+      line-height: 1.55;
     }
 
-    #user-input::placeholder { color: var(--text-muted); }
+    .chat-input-wrap textarea::placeholder { color: var(--gray-400); }
 
-    #send-btn {
-      width: 36px;
-      height: 36px;
-      background: var(--primary);
-      border: none;
-      border-radius: var(--radius);
+    .chat-input-wrap button {
+      width: 36px; height: 36px;
+      background: var(--purple);
+      border: none; border-radius: var(--radius);
       cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       flex-shrink: 0;
       transition: background 0.15s, transform 0.1s;
     }
 
-    #send-btn:hover { background: var(--primary-dark); }
-    #send-btn:active { transform: scale(0.95); }
-    #send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-
-    #send-btn svg { fill: white; }
+    .chat-input-wrap button:hover { background: var(--purple-dark); }
+    .chat-input-wrap button:active { transform: scale(0.95); }
+    .chat-input-wrap button:disabled { opacity: 0.4; cursor: not-allowed; }
+    .chat-input-wrap button svg { fill: white; }
 
     .input-hint {
+      max-width: 720px;
+      margin: 4px auto 0;
       font-size: 11px;
-      color: var(--text-muted);
+      color: var(--gray-400);
       text-align: center;
-      margin-top: 6px;
-      letter-spacing: 0.2px;
     }
 
-    /* ── Footer line ── */
-    .footer-brand {
-      text-align: center;
-      font-size: 11px;
-      color: #bbb;
-      margin-top: 4px;
-      letter-spacing: 0.3px;
-    }
-
-    /* ── Error toast ── */
-    #error-toast {
+    /* ═══════════════════════════════════
+       ERROR TOAST
+    ═══════════════════════════════════ */
+    #toast {
       display: none;
       position: fixed;
-      bottom: 88px;
+      bottom: 80px;
       left: 50%;
       transform: translateX(-50%);
       background: #c0392b;
       color: white;
       padding: 10px 20px;
-      border-radius: var(--radius);
+      border-radius: 2px;
       font-size: 13px;
       z-index: 999;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+      box-shadow: var(--shadow-md);
+    }
+
+    /* ═══════════════════════════════════
+       RESPONSIVE
+    ═══════════════════════════════════ */
+    @media (max-width: 768px) {
+      #welcome-screen { grid-template-columns: 1fr; }
+      .example-panel  { display: none; }
+      .welcome-left   { padding: 32px 24px; }
+      .welcome-title  { font-size: 22px; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <span class="chubb-logo">Chubb</span>
-  <div class="header-divider"></div>
-  <span class="header-title">Assistente SRO SUSEP</span>
-  <span class="header-badge">v3.0.0</span>
+<!-- ── HEADER ── -->
+<header class="site-header">
+  <div class="header-logo">
+    <img src="https://www.chubb.com/content/dam/chubb-sites/chubb/us-en/home_page/chubb-logo-black.png"
+         alt="Chubb" onerror="this.style.display='none'; this.nextElementSibling.style.display='block'">
+    <span style="display:none; font-size:20px; font-weight:900; letter-spacing:2px; color:var(--black)">CHUBB</span>
+  </div>
+  <div class="header-sep"></div>
+  <span class="header-product">Assistente SRO SUSEP</span>
+  <div class="header-tag">
+    <span>SRO v3.0.0</span>
+  </div>
 </header>
 
-<div id="chat">
-  <div class="chat-inner" id="messages">
-    <div class="welcome" id="welcome">
-      <div class="welcome-line"></div>
-      <h1>Assistente de Registro SRO</h1>
-      <p>Tire dúvidas sobre campos, blocos e laioutes do Sistema de Registro de Operações da SUSEP. Informe o laioute, bloco e campo para obter informações precisas.</p>
+<!-- ── STATS BAR ── -->
+<div class="stats-bar">
+  <div class="stat">
+    <span class="stat-num">849</span>
+    <span>campos indexados</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">100</span>
+    <span>blocos</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">11</span>
+    <span>laioutes</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">SUSEP</span>
+    <span>Circulares 710–714/2024</span>
+  </div>
+</div>
+
+<!-- ── APP ── -->
+<div id="app">
+
+  <!-- WELCOME STATE -->
+  <div id="welcome-screen">
+
+    <!-- Left: input -->
+    <div class="welcome-left">
+      <p class="welcome-eyebrow">Sistema de Registro de Operações</p>
+      <h1 class="welcome-title">Tire suas dúvidas sobre<br>campos e laioutes do SRO</h1>
+      <p class="welcome-sub">Consulte formato, condição, bloco e regras de preenchimento de qualquer campo. Informe o laioute, o bloco e o nome do campo para uma resposta precisa.</p>
+
+      <div class="search-bar" id="welcome-bar">
+        <textarea id="welcome-input" placeholder="Ex: Qual o formato do campo 'Data de Início de Vigência' no laioute 1 - Documento?" rows="2" autocomplete="off"></textarea>
+        <button onclick="sendWelcome()" id="welcome-btn" title="Enviar">
+          <svg width="16" height="16" viewBox="0 0 16 16"><path d="M1.5 1.5l13 6.5-13 6.5V9.5l9-1.5-9-1.5z"/></svg>
+        </button>
+      </div>
+
+      <p class="suggestions-label">Exemplos de perguntas</p>
       <div class="suggestions">
-        <button class="suggestion-btn" onclick="sendSuggestion(this)">
-          Qual o formato e condição do campo "Data de Início de Vigência" no laioute 1 - Documento, bloco Dados Gerais do Documento?
-        </button>
-        <button class="suggestion-btn" onclick="sendSuggestion(this)">
-          Quais blocos existem no laioute "3 - Sinistro evento gerador"?
-        </button>
-        <button class="suggestion-btn" onclick="sendSuggestion(this)">
-          O campo "Código da Seguradora" no laioute 1 é obrigatório? Qual a condição?
-        </button>
-        <button class="suggestion-btn" onclick="sendSuggestion(this)">
-          O bloco "Intermediário" do laioute 1 tem alguma condição de preenchimento?
-        </button>
+        <button class="sugg-btn" onclick="fillAndSend(this)">Qual é o formato e a condição do campo "Data de Início de Vigência" no laioute 1 - Documento, bloco Dados Gerais do Documento?</button>
+        <button class="sugg-btn" onclick="fillAndSend(this)">O campo "Código da Seguradora" no laioute 1 é obrigatório? Qual a regra de validação?</button>
+        <button class="sugg-btn" onclick="fillAndSend(this)">Quais blocos existem no laioute "3 - Sinistro evento gerador" e quais são suas condições?</button>
+        <button class="sugg-btn" onclick="fillAndSend(this)">O bloco "Intermediário" do laioute 1 tem alguma condição de preenchimento?</button>
+      </div>
+    </div>
+
+    <!-- Right: example output -->
+    <div class="example-panel">
+      <p class="example-label">Exemplo de resposta</p>
+      <div class="example-msg">
+
+        <div class="ex-bubble user">
+          Qual o formato do campo "Data de Início de Vigência" no laioute 1 - Documento, bloco Dados Gerais do Documento?
+        </div>
+
+        <div class="ex-bubble bot">
+          <span class="ex-tag">Laioute 1 – Documento</span><br>
+          <strong>Bloco:</strong> Dados Gerais do Documento
+
+          <div class="field-row">
+            <span class="field-label">Formato</span>
+            <span class="field-val"><code>AAAA-MM-DD</code> (tipo Date)</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Tamanho</span>
+            <span class="field-val">10 caracteres</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Cardinalidade</span>
+            <span class="field-val"><strong>[1..1]</strong> — preenchimento obrigatório</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Condição</span>
+            <span class="field-val">A data deve ser menor ou igual à data de fim de vigência do documento.</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Cond. Bloco</span>
+            <span class="field-val">Bloco obrigatório em todos os documentos (condição: –)</span>
+          </div>
+        </div>
+
+        <div class="ex-bubble user">
+          E no bloco "Cobertura de Seguro"?
+        </div>
+
+        <div class="ex-bubble bot">
+          <span class="ex-tag">Laioute 1 – Documento</span><br>
+          <strong>Bloco:</strong> Cobertura de Seguro
+
+          <div class="field-row">
+            <span class="field-label">Campo</span>
+            <span class="field-val">Data de Início de Vigência da Cobertura</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Formato</span>
+            <span class="field-val"><code>AAAA-MM-DD</code> (tipo Date)</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Condição</span>
+            <span class="field-val">Deve ser ≥ data de início de vigência do documento.</span>
+          </div>
+          <div class="field-row">
+            <span class="field-label">Cond. Bloco</span>
+            <span class="field-val">Obrigatório quando "Natureza do documento" ≠ sobrevivência pura.</span>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
-</div>
 
-<div id="input-area">
-  <div class="input-wrapper">
-    <textarea
-      id="user-input"
-      placeholder="Pergunte sobre um campo, bloco ou laioute do SRO..."
-      rows="1"
-      autocomplete="off"
-      spellcheck="true"
-    ></textarea>
-    <button id="send-btn" onclick="sendMessage()" title="Enviar (Enter)">
-      <svg width="15" height="15" viewBox="0 0 16 16">
-        <path d="M1.5 1.5l13 6.5-13 6.5V9.5l9-1.5-9-1.5z"/>
-      </svg>
-    </button>
+  <!-- CHAT STATE -->
+  <div id="chat-screen">
+    <div id="chat-messages">
+      <div class="msgs-inner" id="msgs"></div>
+    </div>
   </div>
-  <p class="input-hint">Enter para enviar · Shift+Enter para nova linha</p>
-</div>
 
-<div id="error-toast"></div>
+  <!-- BOTTOM INPUT BAR (chat mode) -->
+  <div id="chat-input-bar">
+    <div class="chat-input-wrap">
+      <textarea id="chat-input" placeholder="Continue perguntando sobre campos, blocos ou laioutes do SRO..." rows="1" autocomplete="off"></textarea>
+      <button onclick="sendChat()" id="chat-btn" title="Enviar (Enter)">
+        <svg width="15" height="15" viewBox="0 0 16 16"><path d="M1.5 1.5l13 6.5-13 6.5V9.5l9-1.5-9-1.5z"/></svg>
+      </button>
+    </div>
+    <p class="input-hint">Enter para enviar · Shift+Enter para nova linha</p>
+  </div>
+
+</div><!-- #app -->
+
+<div id="toast"></div>
 
 <script>
-  const messages = [];
-  let isLoading = false;
+  /* ── STATE ── */
+  const history = [];
+  let loading = false;
 
-  const chatEl  = document.getElementById('chat');
-  const msgsEl  = document.getElementById('messages');
-  const inputEl = document.getElementById('user-input');
-  const sendBtn = document.getElementById('send-btn');
-  const welcome = document.getElementById('welcome');
-  const toast   = document.getElementById('error-toast');
+  /* ── REFS ── */
+  const welcomeScreen  = document.getElementById('welcome-screen');
+  const chatScreen     = document.getElementById('chat-screen');
+  const chatInputBar   = document.getElementById('chat-input-bar');
+  const msgsEl         = document.getElementById('msgs');
+  const chatMessages   = document.getElementById('chat-messages');
+  const welcomeInput   = document.getElementById('welcome-input');
+  const chatInput      = document.getElementById('chat-input');
+  const welcomeBtn     = document.getElementById('welcome-btn');
+  const chatBtn        = document.getElementById('chat-btn');
+  const toast          = document.getElementById('toast');
 
-  inputEl.addEventListener('input', () => {
-    inputEl.style.height = 'auto';
-    inputEl.style.height = Math.min(inputEl.scrollHeight, 120) + 'px';
-  });
+  /* ── KEYBOARD ── */
+  welcomeInput.addEventListener('keydown', e => { if (e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendWelcome(); }});
+  chatInput.addEventListener('keydown',   e => { if (e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendChat(); }});
 
-  inputEl.addEventListener('keydown', e => {
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      sendMessage();
-    }
-  });
+  welcomeInput.addEventListener('input', () => autoResize(welcomeInput));
+  chatInput.addEventListener('input',    () => autoResize(chatInput));
 
-  function sendSuggestion(btn) {
-    inputEl.value = btn.textContent.trim();
-    sendMessage();
+  function autoResize(el) {
+    el.style.height = 'auto';
+    el.style.height = Math.min(el.scrollHeight, 100) + 'px';
   }
 
-  async function sendMessage() {
-    const text = inputEl.value.trim();
-    if (!text || isLoading) return;
+  /* ── SEND FROM WELCOME ── */
+  function fillAndSend(btn) {
+    welcomeInput.value = btn.textContent.trim();
+    sendWelcome();
+  }
 
-    if (welcome) welcome.style.display = 'none';
+  function sendWelcome() {
+    const text = welcomeInput.value.trim();
+    if (!text || loading) return;
+    switchToChat();
+    doSend(text);
+  }
 
-    messages.push({ role: 'user', content: text });
-    appendBubble('user', text);
-    inputEl.value = '';
-    inputEl.style.height = 'auto';
+  function sendChat() {
+    const text = chatInput.value.trim();
+    if (!text || loading) return;
+    chatInput.value = '';
+    autoResize(chatInput);
+    doSend(text);
+  }
 
-    const typingEl = appendTyping();
+  /* ── SWITCH TO CHAT MODE ── */
+  function switchToChat() {
+    welcomeScreen.style.display  = 'none';
+    chatScreen.style.display     = 'flex';
+    chatScreen.style.flexDirection = 'column';
+    chatInputBar.style.display   = 'block';
+    chatInput.focus();
+  }
+
+  /* ── CORE SEND ── */
+  async function doSend(text) {
+    history.push({ role: 'user', content: text });
+    addBubble('user', text);
     setLoading(true);
+    const typing = addTyping();
 
     try {
       const res = await fetch('/api/chat', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ messages }),
+        body: JSON.stringify({ messages: history }),
       });
 
-      typingEl.remove();
+      typing.remove();
 
       if (!res.ok) {
-        const err = await res.json().catch(() => ({ error: 'Erro desconhecido.' }));
-        showError(err.error || 'Erro ao conectar com o servidor.');
-        messages.pop();
+        const e = await res.json().catch(() => ({}));
+        showToast(e.error || 'Erro no servidor.');
+        history.pop();
         return;
       }
 
-      const data = await res.json();
+      const data  = await res.json();
       const reply = data.reply || '(sem resposta)';
-      messages.push({ role: 'assistant', content: reply });
-      appendBubble('bot', reply);
+      history.push({ role: 'assistant', content: reply });
+      addBubble('bot', reply);
 
-    } catch (err) {
-      typingEl.remove();
-      showError('Não foi possível conectar ao servidor. Tente novamente.');
-      messages.pop();
+    } catch(err) {
+      typing.remove();
+      showToast('Sem conexão com o servidor.');
+      history.pop();
     } finally {
       setLoading(false);
     }
   }
 
-  function appendBubble(role, text) {
-    const div = document.createElement('div');
-    div.className = `message ${role}`;
+  /* ── BUBBLE ── */
+  function addBubble(role, text) {
+    const row = document.createElement('div');
+    row.className = `msg ${role}`;
 
-    const avatar = document.createElement('div');
-    avatar.className = 'avatar';
-    avatar.textContent = role === 'user' ? 'EU' : 'SRO';
+    const av = document.createElement('div');
+    av.className = 'av';
+    av.textContent = role === 'user' ? 'EU' : 'SRO';
 
-    const bubble = document.createElement('div');
-    bubble.className = 'bubble';
-    bubble.innerHTML = role === 'bot' ? renderMarkdown(text) : escapeHtml(text);
+    const bbl = document.createElement('div');
+    bbl.className = 'bbl';
+    bbl.innerHTML = role === 'bot' ? md(text) : esc(text);
 
-    div.appendChild(avatar);
-    div.appendChild(bubble);
-    msgsEl.appendChild(div);
-    scrollToBottom();
-    return div;
+    row.appendChild(av);
+    row.appendChild(bbl);
+    msgsEl.appendChild(row);
+    scroll();
+    return row;
   }
 
-  function appendTyping() {
-    const div = document.createElement('div');
-    div.className = 'message bot';
-    div.innerHTML = `
-      <div class="avatar">SRO</div>
-      <div class="bubble">
-        <div class="typing-indicator">
-          <span></span><span></span><span></span>
-        </div>
-      </div>`;
-    msgsEl.appendChild(div);
-    scrollToBottom();
-    return div;
+  function addTyping() {
+    const row = document.createElement('div');
+    row.className = 'msg bot';
+    row.innerHTML = `<div class="av">SRO</div><div class="bbl"><div class="typing"><span></span><span></span><span></span></div></div>`;
+    msgsEl.appendChild(row);
+    scroll();
+    return row;
   }
 
+  /* ── HELPERS ── */
   function setLoading(v) {
-    isLoading = v;
-    sendBtn.disabled = v;
+    loading = v;
+    welcomeBtn.disabled = v;
+    chatBtn.disabled    = v;
   }
 
-  function scrollToBottom() {
-    chatEl.scrollTop = chatEl.scrollHeight;
+  function scroll() { chatMessages.scrollTop = chatMessages.scrollHeight; }
+
+  function esc(s) {
+    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
   }
 
-  function escapeHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-  }
-
-  function showError(msg) {
+  function showToast(msg) {
     toast.textContent = msg;
     toast.style.display = 'block';
     setTimeout(() => toast.style.display = 'none', 4000);
   }
 
-  function renderMarkdown(text) {
-    let html = escapeHtml(text);
-    html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
-    html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
-    html = html.replace(/`([^`]+)`/g, '<code>$1</code>');
-    html = html.replace(/^### (.+)$/gm, '<h3>$1</h3>');
-    html = html.replace(/^## (.+)$/gm, '<h2>$1</h2>');
-    html = html.replace(/^# (.+)$/gm, '<h1>$1</h1>');
-    html = html.replace(/^[-•] (.+)$/gm, '<li>$1</li>');
-    html = html.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>');
-    html = html.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
-    html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
-    html = html.replace(/^---+$/gm, '<hr>');
-    html = html.split(/\n{2,}/).map(p => {
+  /* ── MINIMAL MD ── */
+  function md(text) {
+    let h = esc(text);
+    h = h.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+    h = h.replace(/\*(.+?)\*/g,     '<em>$1</em>');
+    h = h.replace(/`([^`]+)`/g,     '<code>$1</code>');
+    h = h.replace(/^### (.+)$/gm,   '<h3>$1</h3>');
+    h = h.replace(/^## (.+)$/gm,    '<h2>$1</h2>');
+    h = h.replace(/^# (.+)$/gm,     '<h1>$1</h1>');
+    h = h.replace(/^[-•] (.+)$/gm,  '<li>$1</li>');
+    h = h.replace(/(<li>[\s\S]*?<\/li>)/g, '<ul>$1</ul>');
+    h = h.replace(/^\d+\. (.+)$/gm, '<li>$1</li>');
+    h = h.replace(/^&gt; (.+)$/gm,  '<blockquote>$1</blockquote>');
+    h = h.split(/\n{2,}/).map(p => {
       p = p.trim();
       if (!p) return '';
-      if (/^<(h[123]|ul|ol|li|blockquote|hr)/.test(p)) return p;
-      return `<p>${p.replace(/\n/g, '<br>')}</p>`;
+      if (/^<(h[123]|ul|ol|blockquote)/.test(p)) return p;
+      return `<p>${p.replace(/\n/g,'<br>')}</p>`;
     }).join('\n');
-    return html;
+    return h;
   }
 </script>
 </body>
